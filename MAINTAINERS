@@ -255,6 +255,7 @@ F:	.github/workflows/checkpatch.yml
 F:	arch/arm/dts/imx8mp-bytedevkit-u-boot.dtsi
 F:	arch/arm/dts/imx8mp-bytedevkit.dts
 F:	board/bytesatwork/bytedevkit_imx8mp/
+F:	cmd/cpuinfo.c
 F:	configs/imx8mp_bytedevkit_defconfig
 F:	include/configs/imx8mp_bytedevkit.h
 
