@@ -254,6 +254,7 @@ W:	https://www.bytesatwork.io/
 F:	.github/workflows/checkpatch.yaml
 F:	arch/arm/dts/imx93-bytedevkit.dts
 F:	board/bytesatwork/bytedevkit_imx93/
+F:	cmd/cpuinfo.c
 F:	configs/imx93_bytedevkit_defconfig
 F:	include/configs/imx93_bytedevkit.h
 
