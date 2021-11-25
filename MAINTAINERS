@@ -260,6 +260,7 @@ M:	Daniel Ammann <daniel.ammann@bytesatwork.ch>
 S:	Maintained
 T:	git https://github.com/bytesatwork/u-boot-imx
 F:	.github/workflows/checkpatch.yml
+F:	cmd/cpuinfo.c
 
 ARM CORTINA ACCESS CAxxxx
 M:	Alex Nemirovsky <alex.nemirovsky@cortina-access.com>
