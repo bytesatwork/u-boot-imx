@@ -1,0 +1,66 @@
+// SPDX-License-Identifier: GPL-2.0+
+/*
+ * Copyright (C) 2022 bytes at work AG
+ * Based on imx8mm-evk-u-boot.dtsi
+ *
+ * Copyright 2019 NXP
+ */
+
+&clk {
+	u-boot,dm-spl;
+	u-boot,dm-pre-reloc;
+};
+
+&osc_24m {
+	u-boot,dm-spl;
+	u-boot,dm-pre-reloc;
+};
+
+&iomuxc {
+	u-boot,dm-spl;
+};
+
+&pinctrl_flexspi {
+	u-boot,dm-spl;
+};
+
+&gpio1 {
+	u-boot,dm-spl;
+};
+
+&gpio2 {
+	u-boot,dm-spl;
+};
+
+&gpio3 {
+	u-boot,dm-spl;
+};
+
+&gpio4 {
+	u-boot,dm-spl;
+};
+
+&gpio5 {
+	u-boot,dm-spl;
+};
+
+&uart2 {
+	u-boot,dm-spl;
+};
+
+&usdhc2 {
+	u-boot,dm-spl;
+};
+
+&usdhc3 {
+	u-boot,dm-spl;
+};
+
+&flexspi {
+	u-boot,dm-spl;
+};
+
+&flash0 {
+	compatible = "spi-flash";
+	u-boot,dm-spl;
+};
