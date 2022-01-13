@@ -1,0 +1,20 @@
+if TARGET_IMX8MM_BYTEDEVKIT
+
+config SYS_BOARD
+	default "bytedevkit_imx8mm"
+
+config SYS_VENDOR
+	default "bytesatwork"
+
+config SYS_CONFIG_NAME
+	default "imx8mm_bytedevkit"
+
+config IMX8MM_BYTEDEVKIT_FSPI_BOOT
+	bool "Enable FSPI boot"
+	default n
+
+config IMX_CONFIG
+	default "board/bytesatwork/bytedevkit_imx8mm/imximage-8mm-lpddr4-fspi.cfg" if IMX8MM_BYTEDEVKIT_FSPI_BOOT
+	default "arch/arm/mach-imx/imx8m/imximage.cfg"
+
+endif

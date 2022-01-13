@@ -1,0 +1,114 @@
+// SPDX-License-Identifier: GPL-2.0+
+/*
+ * Copyright (C) 2026 bytesatwork AG - https://www.bytesatwork.io
+ *
+ * Based on imx8mm-evk-u-boot.dtsi
+ * Copyright 2019, 2021 NXP
+ */
+
+#include "imx8mm-u-boot.dtsi"
+
+/ {
+	aliases {
+		usbgadget0 = &usbg1;
+	};
+
+	usbg1: usbg1 {
+		compatible = "fsl,imx27-usb-gadget";
+		dr_mode = "peripheral";
+		chipidea,usb = <&usbotg1>;
+		status = "okay";
+	};
+};
+
+&osc_32k {
+	bootph-pre-ram;
+};
+
+&pinctrl_usdhc2_gpio {
+	bootph-pre-ram;
+};
+
+&pinctrl_usdhc2 {
+	bootph-pre-ram;
+};
+
+&pinctrl_usdhc3 {
+	bootph-pre-ram;
+};
+
+&pinctrl_usdhc3_100mhz {
+	bootph-pre-ram;
+};
+
+&pinctrl_usdhc3_200mhz {
+	bootph-pre-ram;
+};
+
+&pinctrl_flexspi {
+	bootph-pre-ram;
+};
+
+&gpio1 {
+	bootph-pre-ram;
+};
+
+&gpio2 {
+	bootph-pre-ram;
+};
+
+&gpio3 {
+	bootph-pre-ram;
+};
+
+&gpio4 {
+	bootph-pre-ram;
+};
+
+&gpio5 {
+	bootph-pre-ram;
+};
+
+&uart2 {
+	bootph-pre-ram;
+};
+
+&usdhc2 {
+	bootph-pre-ram;
+	sd-uhs-sdr104;
+	sd-uhs-ddr50;
+	assigned-clocks = <&clk IMX8MM_CLK_USDHC2>;
+	assigned-clock-rates = <400000000>;
+	assigned-clock-parents = <&clk IMX8MM_SYS_PLL1_400M>;
+};
+
+&usdhc3 {
+	bootph-pre-ram;
+	assigned-clocks = <&clk IMX8MM_CLK_USDHC3>;
+	assigned-clock-rates = <400000000>;
+	assigned-clock-parents = <&clk IMX8MM_SYS_PLL1_400M>;
+};
+
+&i2c2 {
+	bootph-pre-ram;
+};
+
+&pinctrl_i2c2 {
+	bootph-pre-ram;
+};
+
+&pinctrl_i2c2_gpio {
+	bootph-pre-ram;
+};
+
+&config_eeprom {
+	bootph-pre-ram;
+};
+
+&flexspi {
+	bootph-pre-ram;
+};
+
+&flash0 {
+	bootph-pre-ram;
+};
