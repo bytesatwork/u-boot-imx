@@ -260,7 +260,14 @@ M:	Daniel Ammann <daniel.ammann@bytesatwork.ch>
 S:	Maintained
 T:	git https://github.com/bytesatwork/u-boot-imx
 F:	.github/workflows/checkpatch.yml
+F:	arch/arm/dts/imx8mm-bytedevkit-u-boot.dtsi
+F:	arch/arm/dts/imx8mm-bytedevkit.dts
+F:	arch/arm/dts/imx8mm-byteengine-m6.dtsi
+F:	board/bytesatwork/bytedevkit/
 F:	cmd/cpuinfo.c
+F:	configs/imx8mm_bytedevkit_defconfig
+F:	configs/imx8mm_bytedevkit_fspi_defconfig
+F:	include/configs/bytedevkit.h
 
 ARM CORTINA ACCESS CAxxxx
 M:	Alex Nemirovsky <alex.nemirovsky@cortina-access.com>

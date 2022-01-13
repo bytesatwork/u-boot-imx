@@ -100,6 +100,35 @@ config TARGET_IMX8MM_DATA_MODUL_EDM_SBC
 	select IMX8M_LPDDR4
 	select SUPPORT_SPL
 
+config TARGET_IMX8MQ_DDR3L_VAL
+	bool "imx8mq_ddr3l_val"
+	select IMX8MQ
+	select SUPPORT_SPL
+
+config TARGET_IMX8MQ_DDR4_VAL
+	bool "imx8mq_ddr4_val"
+	select IMX8MQ
+	select SUPPORT_SPL
+	select IMX8M_DDR4
+
+config TARGET_IMX8MM_BYTEDEVKIT
+	bool "imx8mm byteDEVKIT board"
+	select IMX8MM
+	select SUPPORT_SPL
+	select IMX8M_LPDDR4
+
+config TARGET_IMX8MM_DDR4_VAL
+	bool "imx8mm DDR4 validation board"
+	select IMX8MM
+	select SUPPORT_SPL
+	select IMX8M_DDR4
+
+config TARGET_IMX8MM_DDR3L_VAL
+	bool "imx8mm DDR3L validation board"
+	select IMX8MM
+	select SUPPORT_SPL
+	select IMX8M_DDR3L
+
 config TARGET_IMX8MM_EVK
 	bool "imx8mm LPDDR4 EVK board"
 	select IMX8MM
@@ -453,6 +482,7 @@ source "board/beacon/imx8mm/Kconfig"
 source "board/beacon/imx8mn/Kconfig"
 source "board/beacon/imx8mp/Kconfig"
 source "board/bsh/imx8mn_smm_s2/Kconfig"
+source "board/bytesatwork/bytedevkit/Kconfig"
 source "board/cloos/imx8mm_phg/Kconfig"
 source "board/compulab/imx8mm-cl-iot-gate/Kconfig"
 source "board/data_modul/imx8mm_edm_sbc/Kconfig"
