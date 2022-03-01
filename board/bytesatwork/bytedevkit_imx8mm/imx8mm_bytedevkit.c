@@ -29,6 +29,7 @@
 #include <asm/mach-imx/video.h>
 #include <power/pca9450.h>
 #include <linux/delay.h>
+#include "../baw_config/baw_config_eeprom.h"
 
 DECLARE_GLOBAL_DATA_PTR;
 
@@ -42,6 +43,25 @@ static const iomux_v3_cfg_t uart_pads[] = {
 
 static const iomux_v3_cfg_t wdog_pads[] = {
 	IMX8MM_PAD_GPIO1_IO02_WDOG1_WDOG_B  | MUX_PAD_CTRL(WDOG_PAD_CTRL),
+};
+
+#define I2C_PAD_CTRL (PAD_CTL_DSE6 | PAD_CTL_HYS | PAD_CTL_PUE | PAD_CTL_PE)
+#define I2C_GPIO_MUX MUX_PAD_CTRL(I2C_PAD_CTRL)
+/* I2Cs != I2C1(index 0) need fix by manually set the SION bit. Solution from:
+ * https://community.nxp.com/t5/i-MX-Processors/iMX8MM-problems-on-early-I2C-access-from-SPL/m-p/1230261/highlight/true#M169427
+ */
+#define I2C_MUX (I2C_GPIO_MUX | ((u64)(IOMUX_CONFIG_SION) << MUX_MODE_SHIFT))
+struct i2c_pads_info i2c2_pad_info = {
+	.scl = {
+		.i2c_mode = IMX8MM_PAD_I2C2_SCL_I2C2_SCL | I2C_MUX,
+		.gpio_mode = IMX8MM_PAD_I2C2_SCL_GPIO5_IO16 | I2C_GPIO_MUX,
+		.gp = IMX_GPIO_NR(5, 16),
+	},
+	.sda = {
+		.i2c_mode = IMX8MM_PAD_I2C2_SDA_I2C2_SDA | I2C_MUX,
+		.gpio_mode = IMX8MM_PAD_I2C2_SDA_GPIO5_IO17 | I2C_GPIO_MUX,
+		.gp = IMX_GPIO_NR(5, 17),
+	},
 };
 
 #ifdef CONFIG_FSL_FSPI
@@ -65,6 +85,11 @@ int board_early_init_f(void)
 
 	init_uart_clk(1);
 
+#ifdef CONFIG_SPL_BUILD
+	/* SPL does not use DM compared to u-boot, so setup manually */
+	setup_i2c(CONFIG_BAW_CONFIG_EEPROM_BUS, SPL_I2C_SPEED,
+		  CONFIG_BAW_CONFIG_EEPROM_ADDRESS, &i2c2_pad_info);
+#endif
 	return 0;
 }
 
@@ -172,6 +197,55 @@ int board_late_init(void)
 #ifdef CONFIG_ENV_IS_IN_MMC
 	board_late_mmc_env_init();
 #endif
+
+#ifdef CONFIG_BAW_CONFIG_EEPROM
+	if (baw_config_eeprom_init())
+		printf("EEPROM init failed!\n");
+#endif
+
+	return 0;
+}
+
+#include <asm/armv8/mmu.h>
+extern struct mm_region *mem_map;
+
+/* based on arch/arm/mach-imx/imx8m/soc.c */
+static u8 imx8m_find_dram_entry_in_mem_map(u64 phys_addr)
+{
+	u8 i;
+
+	for (i = 0; mem_map[i].size != 0; i++)
+		if (mem_map[i].phys == phys_addr)
+			return i;
+
+	hang(); /* Entry not found, this must never happen. */
+}
+
+int board_phys_sdram_size(phys_size_t *size)
+{
+	u8 index;
+	/* NOTE: value passed from SPL (same address as set in SPL) */
+	phys_size_t *ram_size = (phys_size_t *)BAW_CONFIG_RAM_SIZE_PTR_ADDR;
+
+	index = imx8m_find_dram_entry_in_mem_map(CFG_SYS_SDRAM_BASE);
+
+	if (!size)
+		return -EINVAL;
+
+	switch (*ram_size) {
+	case SZ_512M:
+	case SZ_1G:
+	case (SZ_1G + SZ_512M):
+	case SZ_2G:
+	case (SZ_2G + SZ_1G):
+		mem_map[index].size = *ram_size;
+		*size = *ram_size;
+		break;
+	case SZ_4G:
+		return -EOPNOTSUPP;
+	default:
+		return -EINVAL;
+	}
 
 	return 0;
 }
