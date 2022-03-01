@@ -13,3 +13,5 @@ obj-y += spl.o
 obj-$(CONFIG_IMX8M_LPDDR4) += lpddr4_timing_512_1024_1536_2048.o
 obj-$(CONFIG_IMX8M_LPDDR4) += lpddr4_timing_3072_4096.o
 endif
+
+obj-y += ../baw_config/
