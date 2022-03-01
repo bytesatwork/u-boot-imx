@@ -26,6 +26,9 @@
 #include <fsl_esdhc_imx.h>
 #include <mmc.h>
 
+#include "baw_config/baw_config_eeprom.h"
+#include "baw_config/baw_config_get.h"
+
 DECLARE_GLOBAL_DATA_PTR;
 
 int spl_board_boot_device(enum boot_device boot_dev_spl)
@@ -48,8 +51,65 @@ int spl_board_boot_device(enum boot_device boot_dev_spl)
 	}
 }
 
+/* NOTE: ddr timing config params, see arch/arm/include/asm/arch-imx8m/ddr.h */
+struct dram_timing_info dram_timing;
+/* NOTE: generated timings for different RAM types. */
+extern struct dram_timing_info dram_timing_512;
+extern struct dram_timing_info dram_timing_1024;
+extern struct dram_timing_info dram_timing_1536;
+
+struct dram_setup {
+	baw_config_ram_t ram;
+	const phys_size_t size;
+	const struct dram_timing_info *timing;
+};
+
 void spl_dram_init(void)
 {
+	/* NOTE: store ram_size in OCRAM to pass value from SPL to u-boot */
+	phys_size_t *ram_size = (phys_size_t *)BAW_CONFIG_RAM_SIZE_PTR_ADDR;
+	const struct dram_timing_info dram_timings[] = {
+		dram_timing_512,
+		dram_timing_1024,
+		dram_timing_1536,
+	};
+	const struct dram_setup dram_setups[] = {
+		{ M6_RAM_MT53E128M32D2DS_053, SZ_512M, &dram_timings[0] },
+		{ M6_RAM_MT53E256M32D2DS_053, SZ_1G, &dram_timings[1] },
+		{ M6_RAM_MT53E384M32D2DS_053, SZ_1G+SZ_512M, &dram_timings[2] },
+		/* fallbacks */
+		{ M6_RAM_MT53D512M32D2DS_053, SZ_512M, &dram_timings[0] },
+		{ M6_RAM_MT53E768M32D4DT_053, SZ_512M, &dram_timings[0] },
+		{ M6_RAM_MT53D1024M32D4DT_053, SZ_512M, &dram_timings[0] },
+		{ 0, 0, NULL },
+	};
+	struct baw_config config;
+	bool ram_found = false;
+	int i;
+
+#ifdef CONFIG_BAW_CONFIG_EEPROM
+	if (baw_config_eeprom_init()) {
+		printf("EEPROM init failed!\n");
+	}
+#endif
+
+	baw_config_get(&config);
+	for (i = 0; dram_setups[i].ram > 0; i++) {
+		if (config.ram == dram_setups[i].ram) {
+			memcpy(&dram_timing, dram_setups[i].timing,
+			       sizeof(dram_timing));
+			*ram_size = dram_setups[i].size;
+			ram_found = true;
+			break;
+		}
+	}
+
+	if (!ram_found) {
+		printf("Error: Unknown RAM config, use fallback.\n");
+		memcpy(&dram_timing, &dram_timings[0], sizeof(dram_timing));
+		*ram_size = dram_setups[0].size;
+	}
+
 	ddr_init(&dram_timing);
 }
 

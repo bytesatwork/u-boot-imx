@@ -13,6 +13,11 @@
 #include <asm/arch/imx-regs.h>
 #include "imx_env.h"
 
+#define BAW_CONFIG_BUILTIN_PCB		M6_PCB_REV_1_0
+#define BAW_CONFIG_BUILTIN_RAM		M6_RAM_MT53E128M32D2DS_053
+#define BAW_CONFIG_BUILTIN_FLASH	EMMC_16GB
+#define BAW_CONFIG_RAM_SIZE_PTR_ADDR	0x0091ffe0
+
 #ifdef CONFIG_SECURE_BOOT
 #define CONFIG_CSF_SIZE			0x2000 /* 8K region */
 #endif

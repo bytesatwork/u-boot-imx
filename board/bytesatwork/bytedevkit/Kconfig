@@ -9,6 +9,40 @@ config SYS_VENDOR
 config SYS_CONFIG_NAME
 	default "bytedevkit"
 
+menu "bytes at work config tool"
+
+config CMD_BAW_CONFIG
+	bool "bawconfig command"
+	default y
+	help
+	  Enable bawconfig command functionality.
+
+config BAW_CONFIG_EEPROM
+	bool "bawconfig eeprom support"
+	default y
+	help
+	  Enable bawconfig EEPROM read/write functionality.
+
+config BAW_CONFIG_EEPROM_BUS
+	int "bawconfig I2C bus number"
+	default 1
+	help
+	  I2C bus number of configuration EEPROM.
+
+config BAW_CONFIG_EEPROM_ADDRESS
+	hex "bawconfig I2C address"
+	default 0x50
+	help
+	  I2C address of configuration EEPROM.
+
+config BAW_CONFIG_BUILTIN
+	bool "bawconfig builtin support"
+	default y
+	help
+	  Enable bawconfig builtin configuration functionality.
+
+endmenu
+
 source "board/bytesatwork/common/Kconfig"
 
 endif
