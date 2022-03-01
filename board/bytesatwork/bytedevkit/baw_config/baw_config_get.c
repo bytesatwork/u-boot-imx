@@ -3,8 +3,9 @@
  * Copyright (C) 2015 bytes at work AG
  */
 
-#include <asm/arch/ddr_defs.h>
+#include <linux/types.h>
 #include <i2c.h>
+#include <stdio.h>
 #include "baw_config_get.h"
 
 #include "baw_config_builtin.h"
@@ -16,10 +17,15 @@ void baw_config_get(struct baw_config *config)
 {
 	u8 __attribute__((unused)) reg = 0;
 
-	if (baw_config_eeprom_read(config) == 0)
-		return;
-
+	if (baw_config_eeprom_read(config) == 0) {
 #ifdef CONFIG_SPL_BUILD
+		printf("Use EEPROM RAM config: %u (%s)\n", config->ram,
+		       baw_config_get_ram_name(config->ram));
+#endif
+		return;
+	}
+
+#if defined(CONFIG_SPL_BUILD) && defined(CONFIG_TARGET_BYTEENGINE_AM335X)
 	if (i2c_read(PMIC_ADDRESS, 0x20, 1, &reg, 1) != 0) {
 		printf("Error: PMIC read failed\n");
 		goto default_config;
@@ -40,6 +46,23 @@ void baw_config_get(struct baw_config *config)
 default_config:
 #endif
 
+#if defined(CONFIG_TARGET_BYTEENGINE_AM335X)
 	config->ram = M2_RAM_K4B2G1646EBIH9;	/* set default to legacy DDR3 */
-	printf("Error: no RAM configuration found, trying fallback configuration %u\n", config->ram);
+#elif defined(CONFIG_TARGET_IMX8MM_BYTEDEVKIT)
+#if defined(CONFIG_BAW_CONFIG_BUILTIN)
+	config->ram = BAW_CONFIG_BUILTIN_RAM;
+#ifdef CONFIG_SPL_BUILD
+	printf("Use built in RAM config: %u (%s)\n", config->ram,
+	       baw_config_get_ram_name(config->ram));
+#endif
+	return;
+#else
+	/* use smallest RAM as fallback */
+	config->ram = M6_RAM_MT53E128M32D2DS_053;
+#endif
+#endif
+#ifdef CONFIG_SPL_BUILD
+	printf("Error: no RAM configuration found, trying fallback config ");
+	printf("%u (%s)\n", config->ram, baw_config_get_ram_name(config->ram));
+#endif
 }
