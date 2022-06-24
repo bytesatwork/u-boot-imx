@@ -57,6 +57,7 @@ struct dram_timing_info dram_timing;
 extern struct dram_timing_info dram_timing_512;
 extern struct dram_timing_info dram_timing_1024;
 extern struct dram_timing_info dram_timing_1536;
+extern struct dram_timing_info dram_timing_2048;
 
 struct dram_setup {
 	baw_config_ram_t ram;
@@ -72,15 +73,18 @@ void spl_dram_init(void)
 		dram_timing_512,
 		dram_timing_1024,
 		dram_timing_1536,
+		dram_timing_2048,
 	};
 	const struct dram_setup dram_setups[] = {
 		{ M6_RAM_MT53E128M32D2DS_053, SZ_512M, &dram_timings[0] },
 		{ M6_RAM_MT53E256M32D2DS_053, SZ_1G, &dram_timings[1] },
 		{ M6_RAM_MT53E384M32D2DS_053, SZ_1G+SZ_512M, &dram_timings[2] },
+		{ M6_RAM_MT53D512M32D2DS_053, SZ_2G, &dram_timings[3] },
 		/* fallbacks */
 		{ M6_RAM_MT53D512M32D2DS_053, SZ_512M, &dram_timings[0] },
 		{ M6_RAM_MT53E768M32D4DT_053, SZ_512M, &dram_timings[0] },
 		{ M6_RAM_MT53D1024M32D4DT_053, SZ_512M, &dram_timings[0] },
+		{ M6_RAM_MT53D512M32D2DS_053, SZ_512M, &dram_timings[0] },
 		{ 0, 0, NULL },
 	};
 	struct baw_config config;
