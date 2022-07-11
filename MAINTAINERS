@@ -255,6 +255,12 @@ F:	doc/README.bcm7xxx
 F:	drivers/mmc/bcmstb_sdhci.c
 F:	drivers/spi/bcmstb_spi.c
 
+ARM BYTESATWORK IMX BYTEDEVKIT
+M:	Daniel Ammann <daniel.ammann@bytesatwork.ch>
+S:	Maintained
+T:	git https://github.com/bytesatwork/u-boot-imx
+F:	.github/workflows/checkpatch.yml
+
 ARM CORTINA ACCESS CAxxxx
 M:	Alex Nemirovsky <alex.nemirovsky@cortina-access.com>
 S:	Supported
