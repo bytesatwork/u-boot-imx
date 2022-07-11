@@ -247,6 +247,12 @@ F:	doc/README.bcm7xxx
 F:	drivers/mmc/bcmstb_sdhci.c
 F:	drivers/spi/bcmstb_spi.c
 
+ARM BYTESATWORK BYTEDEVKIT IMX93
+M:	Rico Ganahl <rico.ganahl@bytesatwork.ch>
+S:	Maintained
+W:	https://www.bytesatwork.io/
+F:	.github/workflows/checkpatch.yaml
+
 ARM CORTINA ACCESS CAxxxx
 M:	Alex Nemirovsky <alex.nemirovsky@cortina-access.com>
 S:	Supported
