@@ -177,6 +177,7 @@ ARM BYTESATWORK IMX BYTEDEVKIT
 M:	Rico Ganahl <rico.ganahl@bytesatwork.ch>
 S:	Maintained
 F:	board/bytesatwork/bytedevkit/lpddr4_timing*
+F:	board/bytesatwork/bytedevkit/*
 
 ARM CORTINA ACCESS CAxxxx
 M:	Alex Nemirovsky <alex.nemirovsky@cortina-access.com>
