@@ -13,10 +13,8 @@ obj-y += spl.o
 obj-y += baw_config/baw_config.o
 # baw_config_get is mandatory for lpddr4 timing setup
 obj-y += baw_config/baw_config_get.o
-obj-$(CONFIG_IMX8M_LPDDR4) += lpddr4_timing_512.o
-obj-$(CONFIG_IMX8M_LPDDR4) += lpddr4_timing_1024.o
-obj-$(CONFIG_IMX8M_LPDDR4) += lpddr4_timing_1536.o
-obj-$(CONFIG_IMX8M_LPDDR4) += lpddr4_timing_2048.o
+obj-$(CONFIG_IMX8M_LPDDR4) += lpddr4_timing_512_1024_1536_2048.o
+obj-$(CONFIG_IMX8M_LPDDR4) += lpddr4_timing_3072_4096.o
 else
 ifneq ($(or $(CONFIG_CMD_BAW_CONFIG), $(CONFIG_BAW_CONFIG_BUILTIN), $(CONFIG_BAW_CONFIG_EEPROM)),)
 obj-y += baw_config/baw_config.o

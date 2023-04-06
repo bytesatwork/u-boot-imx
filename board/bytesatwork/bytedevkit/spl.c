@@ -26,6 +26,7 @@
 #include <fsl_esdhc_imx.h>
 #include <mmc.h>
 
+#include "lpddr4_timings.h"
 #include "baw_config/baw_config_eeprom.h"
 #include "baw_config/baw_config_get.h"
 
@@ -53,11 +54,6 @@ int spl_board_boot_device(enum boot_device boot_dev_spl)
 
 /* NOTE: ddr timing config params, see arch/arm/include/asm/arch-imx8m/ddr.h */
 struct dram_timing_info dram_timing;
-/* NOTE: generated timings for different RAM types. */
-extern struct dram_timing_info dram_timing_512;
-extern struct dram_timing_info dram_timing_1024;
-extern struct dram_timing_info dram_timing_1536;
-extern struct dram_timing_info dram_timing_2048;
 
 struct dram_setup {
 	baw_config_ram_t ram;
@@ -69,22 +65,18 @@ void spl_dram_init(void)
 {
 	/* NOTE: store ram_size in OCRAM to pass value from SPL to u-boot */
 	phys_size_t *ram_size = (phys_size_t *)BAW_CONFIG_RAM_SIZE_PTR_ADDR;
-	const struct dram_timing_info dram_timings[] = {
-		dram_timing_512,
-		dram_timing_1024,
-		dram_timing_1536,
-		dram_timing_2048,
-	};
 	const struct dram_setup dram_setups[] = {
-		{ M6_RAM_MT53E128M32D2DS_053, SZ_512M, &dram_timings[0] },
-		{ M6_RAM_MT53E256M32D2DS_053, SZ_1G, &dram_timings[1] },
-		{ M6_RAM_MT53E384M32D2DS_053, SZ_1G+SZ_512M, &dram_timings[2] },
-		{ M6_RAM_MT53D512M32D2DS_053, SZ_2G, &dram_timings[3] },
+		{ M6_RAM_MT53E128M32D2DS_053, SZ_512M, &dram_timing_512 },
+		{ M6_RAM_MT53E256M32D2DS_053, SZ_1G, &dram_timing_1024 },
+		{ M6_RAM_MT53E384M32D2DS_053, SZ_1G + SZ_512M,
+		  &dram_timing_1536 },
+		{ M6_RAM_MT53D512M32D2DS_053, SZ_2G, &dram_timing_2048 },
+		{ M6_RAM_MT53E768M32D4DT_053, SZ_2G + SZ_1G,
+		  &dram_timing_3072 },
+		{ M6_RAM_MT53D1024M32D4DT_053_3GB, SZ_2G + SZ_1G,
+		  &dram_timing_3072 },
 		/* fallbacks */
-		{ M6_RAM_MT53D512M32D2DS_053, SZ_512M, &dram_timings[0] },
-		{ M6_RAM_MT53E768M32D4DT_053, SZ_512M, &dram_timings[0] },
-		{ M6_RAM_MT53D1024M32D4DT_053, SZ_512M, &dram_timings[0] },
-		{ M6_RAM_MT53D512M32D2DS_053, SZ_512M, &dram_timings[0] },
+		{ M6_RAM_MT53D1024M32D4DT_053, SZ_512M, &dram_timing_3072 },
 		{ 0, 0, NULL },
 	};
 	struct baw_config config;
@@ -110,7 +102,7 @@ void spl_dram_init(void)
 
 	if (!ram_found) {
 		printf("Error: Unknown RAM config, use fallback.\n");
-		memcpy(&dram_timing, &dram_timings[0], sizeof(dram_timing));
+		memcpy(&dram_timing, &dram_timing_512, sizeof(dram_timing));
 		*ram_size = dram_setups[0].size;
 	}
 

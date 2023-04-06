@@ -243,10 +243,11 @@ int board_phys_sdram_size(phys_size_t *size)
 	case (SZ_1G + SZ_512M):
 	case SZ_2G:
 	case (SZ_2G + SZ_1G):
-	case SZ_4G:
 		mem_map[5].size = *ram_size;
 		*size = *ram_size;
 		break;
+	case SZ_4G:
+		return -ENOTSUPP;
 	default:
 		return -EINVAL;
 	}
