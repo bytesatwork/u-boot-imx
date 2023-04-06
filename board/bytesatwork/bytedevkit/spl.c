@@ -27,8 +27,8 @@
 #include <mmc.h>
 
 #include "lpddr4_timings.h"
-#include "baw_config/baw_config_eeprom.h"
-#include "baw_config/baw_config_get.h"
+#include "../baw_config/baw_config_eeprom.h"
+#include "../baw_config/baw_config_get.h"
 
 DECLARE_GLOBAL_DATA_PTR;
 

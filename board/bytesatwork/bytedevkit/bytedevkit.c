@@ -29,7 +29,7 @@
 #include <usb.h>
 #include <asm/mach-imx/video.h>
 #include <power/pca9450.h>
-#include "baw_config/baw_config_eeprom.h"
+#include "../baw_config/baw_config_eeprom.h"
 
 DECLARE_GLOBAL_DATA_PTR;
 
