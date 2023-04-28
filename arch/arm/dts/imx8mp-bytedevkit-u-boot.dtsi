@@ -80,15 +80,15 @@
 	u-boot,off-on-delay-us = <20000>;
 };
 
-&pinctrl_uart2 {
+&pinctrl_uart1 {
 	u-boot,dm-spl;
 };
 
-&pinctrl_usdhc2_gpio {
+&pinctrl_usdhc1_gpio {
 	u-boot,dm-spl;
 };
 
-&pinctrl_usdhc2 {
+&pinctrl_usdhc1 {
 	u-boot,dm-spl;
 };
 
@@ -116,7 +116,7 @@
 	u-boot,dm-spl;
 };
 
-&uart2 {
+&uart1 {
 	u-boot,dm-spl;
 };
 

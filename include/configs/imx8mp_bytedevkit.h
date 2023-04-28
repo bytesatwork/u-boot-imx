@@ -74,26 +74,6 @@
 #define BOOTENV
 #endif
 
-#define JH_ROOT_DTB    "imx8mp-evk-root.dtb"
-
-#define JAILHOUSE_ENV \
-	"jh_clk= \0 " \
-	"jh_root_dtb=" JH_ROOT_DTB "\0" \
-	"jh_mmcboot=setenv fdtfile ${jh_root_dtb};" \
-		"setenv jh_clk clk_ignore_unused mem=1920MB; " \
-			   "if run loadimage; then " \
-				   "run mmcboot; " \
-			   "else run jh_netboot; fi; \0" \
-	"jh_netboot=setenv fdtfile ${jh_root_dtb}; setenv jh_clk clk_ignore_unused mem=1920MB; run netboot; \0 "
-
-#define SR_IR_V2_COMMAND \
-	"nodes=/busfreq /power-domains /soc@0/caam-sm@100000 /soc@0/bus@30000000/caam_secvio /soc@0/bus@30000000/caam-snvs@30370000 /soc@0/bus@30800000/flexspi_nand@30bb0000 /soc@0/bus@32c00000/mipi_dsi@32e60000 /soc@0/bus@32c00000/lcd-controller@32e80000 /soc@0/bus@32c00000/blk-ctl@32ec0000 /hsio-mix@32f10000 /pcie@33800000 /soc@0/bus@30800000/i2c@30a20000/pca9450@25 /soc@0/bus@30800000/i2c@30a30000/adv7535@3d /soc@0/bus@30800000/i2c@30a30000/tcpc@50 /wdt-reboot /mcu_rdc /soc@0/bus@30800000/ethernet@30bf0000 /dsi-host /rm67199_panel /cbtl04gp /pcie-phy@32f00000 /binman \0" \
-	"sr_ir_v2_cmd=cp.b ${fdtcontroladdr} ${fdt_addr_r} 0x10000;"\
-	"fdt addr ${fdt_addr_r};"\
-	"fdt set /soc@0/usb@32f10100/usb@38100000 compatible snps,dwc3;" \
-	"fdt set /soc@0/usb@32f10108/usb@38200000 compatible snps,dwc3;" \
-	"for i in ${nodes}; do fdt rm ${i}; done \0"
-
 #define CONFIG_MFG_ENV_SETTINGS \
 	CONFIG_MFG_ENV_SETTINGS_DEFAULT \
 	"initrd_addr=0x43800000\0" \
@@ -115,8 +95,8 @@
 	"fdt_addr=0x43000000\0"			\
 	"fdt_high=0xffffffffffffffff\0" \
 	"mtdparts=" MFG_NAND_PARTITION "\0" \
-	"console=ttymxc1,115200 earlycon=ec_imx6q,0x30890000,115200\0" \
-	"bootargs=console=ttymxc1,115200 earlycon=ec_imx6q,0x30890000,115200 ubi.mtd=nandrootfs "  \
+	"console=ttymxc0,115200 earlycon=ec_imx6q,0x30860000,115200\0" \
+	"bootargs=console=ttymxc0,115200 earlycon=ec_imx6q,0x30860000,115200 ubi.mtd=nandrootfs "  \
 		"root=ubi0:nandrootfs rootfstype=ubifs "		     \
 		MFG_NAND_PARTITION \
 		"\0" \
@@ -126,34 +106,30 @@
 
 #else
 #define CONFIG_EXTRA_ENV_SETTINGS		\
-	CONFIG_MFG_ENV_SETTINGS \
-	JAILHOUSE_ENV \
-	SR_IR_V2_COMMAND \
-	BOOTENV \
 	"prepare_mcore=setenv mcore_clk clk-imx8mp.mcore_booted;\0" \
 	"scriptaddr=0x43500000\0" \
 	"kernel_addr_r=" __stringify(CONFIG_SYS_LOAD_ADDR) "\0" \
 	"bsp_script=boot.scr\0" \
-	"image=Image\0" \
+	"image=/boot/Image\0" \
 	"splashimage=0x50000000\0" \
-	"console=ttymxc1,115200\0" \
+	"console=ttymxc0,115200\0" \
 	"fdt_addr_r=0x43000000\0"			\
 	"fdt_addr=0x43000000\0"			\
 	"boot_fdt=try\0" \
 	"fdt_high=0xffffffffffffffff\0"		\
 	"boot_fit=no\0" \
-	"fdtfile=" CONFIG_DEFAULT_FDT_FILE "\0" \
+	"fdtfile=/boot/imx8mp-evk.dtb\0" \
 	"bootm_size=0x10000000\0" \
-	"mmcdev="__stringify(CONFIG_SYS_MMC_ENV_DEV)"\0" \
+	"mmcdev=0\0" \
 	"mmcpart=1\0" \
-	"mmcroot=" CONFIG_MMCROOT " rootwait rw\0" \
+	"mmcroot=/dev/mmcblk0p1 rootwait rw\0" \
 	"mmcautodetect=yes\0" \
 	"mmcargs=setenv bootargs ${jh_clk} ${mcore_clk} console=${console} root=${mmcroot}\0 " \
-	"loadbootscript=fatload mmc ${mmcdev}:${mmcpart} ${loadaddr} ${bsp_script};\0" \
+	"loadbootscript=ext4load mmc ${mmcdev}:${mmcpart} ${loadaddr} ${bsp_script};\0" \
 	"bootscript=echo Running bootscript from mmc ...; " \
 		"source\0" \
-	"loadimage=fatload mmc ${mmcdev}:${mmcpart} ${loadaddr} ${image}\0" \
-	"loadfdt=fatload mmc ${mmcdev}:${mmcpart} ${fdt_addr_r} ${fdtfile}\0" \
+	"loadimage=ext4load mmc ${mmcdev}:${mmcpart} ${loadaddr} ${image}\0" \
+	"loadfdt=ext4load mmc ${mmcdev}:${mmcpart} ${fdt_addr_r} ${fdtfile}\0" \
 	"mmcboot=echo Booting from mmc ...; " \
 		"run mmcargs; " \
 		"if test ${boot_fit} = yes || test ${boot_fit} = try; then " \
@@ -186,16 +162,12 @@
 			"fi; " \
 		"fi;\0" \
 	"bsp_bootcmd=echo Running BSP bootcmd ...; " \
-		"mmc dev ${mmcdev}; if mmc rescan; then " \
-		   "if run loadbootscript; then " \
-			   "run bootscript; " \
-		   "else " \
-			   "if run loadimage; then " \
-				   "run mmcboot; " \
-			   "else run netboot; " \
-			   "fi; " \
-		   "fi; " \
-	   "fi;"
+		"mmc dev 0; " \
+		"setenv mmcdev 0; " \
+		"setenv mmcroot \"/dev/mmcblk0p1 rootwait rw\"; " \
+		"run loadimage; " \
+		"run mmcboot;" \
+
 #endif
 
 /* Link Definitions */
@@ -207,9 +179,9 @@
 #define CONFIG_SYS_INIT_SP_ADDR \
 	(CONFIG_SYS_INIT_RAM_ADDR + CONFIG_SYS_INIT_SP_OFFSET)
 
-#define CONFIG_MMCROOT			"/dev/mmcblk1p2"  /* USDHC2 */
+#define CONFIG_MMCROOT			"/dev/mmcblk0p1"  /* USDHC2 */
 
-/* Totally 6GB DDR */
+/* Totally 4GB DDR */
 #define CONFIG_SYS_SDRAM_BASE		0x40000000
 #define PHYS_SDRAM			0x40000000
 #define PHYS_SDRAM_SIZE			0xC0000000	/* 3 GB */
@@ -217,10 +189,10 @@
 #ifdef CONFIG_TARGET_IMX8MP_DDR4_EVK
 #define PHYS_SDRAM_2_SIZE		0x40000000	/* 1 GB */
 #else
-#define PHYS_SDRAM_2_SIZE		0xC0000000	/* 3 GB */
+#define PHYS_SDRAM_2_SIZE		0x40000000	/* 1 GB */
 #endif
 
-#define CONFIG_MXC_UART_BASE		UART2_BASE_ADDR
+#define CONFIG_MXC_UART_BASE		UART1_BASE_ADDR
 
 /* Monitor Command Prompt */
 #define CONFIG_SYS_CBSIZE		2048
@@ -254,5 +226,9 @@
 #define CONFIG_USB_MAX_CONTROLLER_COUNT         2
 #define CONFIG_USBD_HS
 #define CONFIG_USB_GADGET_VBUS_DRAW 2
+
+#ifdef CONFIG_ANDROID_SUPPORT
+#include "imx8mp_evk_android.h"
+#endif
 
 #endif
