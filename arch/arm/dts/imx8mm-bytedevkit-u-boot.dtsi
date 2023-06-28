@@ -6,6 +6,19 @@
  * Copyright 2019 NXP
  */
 
+/ {
+	aliases {
+		usbgadget0 = &usbg1;
+	};
+
+	usbg1: usbg1 {
+		compatible = "fsl,imx27-usb-gadget";
+		dr_mode = "peripheral";
+		chipidea,usb = <&usbotg1>;
+		status = "okay";
+	};
+};
+
 &clk {
 	u-boot,dm-spl;
 	u-boot,dm-pre-reloc;
