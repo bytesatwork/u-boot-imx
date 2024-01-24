@@ -84,11 +84,11 @@
 	u-boot,dm-spl;
 };
 
-&pinctrl_usdhc1_gpio {
+&pinctrl_usdhc2_gpio {
 	u-boot,dm-spl;
 };
 
-&pinctrl_usdhc1 {
+&pinctrl_usdhc2 {
 	u-boot,dm-spl;
 };
 

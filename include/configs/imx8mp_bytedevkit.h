@@ -120,9 +120,9 @@
 	"boot_fit=no\0" \
 	"fdtfile=/boot/imx8mp-evk.dtb\0" \
 	"bootm_size=0x10000000\0" \
-	"mmcdev=0\0" \
+	"mmcdev=1\0" \
 	"mmcpart=1\0" \
-	"mmcroot=/dev/mmcblk0p1 rootwait rw\0" \
+	"mmcroot=/dev/mmcblk1p1 rootwait rw\0" \
 	"mmcautodetect=yes\0" \
 	"mmcargs=setenv bootargs ${jh_clk} ${mcore_clk} console=${console} root=${mmcroot}\0 " \
 	"loadbootscript=ext4load mmc ${mmcdev}:${mmcpart} ${loadaddr} ${bsp_script};\0" \
@@ -162,9 +162,9 @@
 			"fi; " \
 		"fi;\0" \
 	"bsp_bootcmd=echo Running BSP bootcmd ...; " \
-		"mmc dev 0; " \
-		"setenv mmcdev 0; " \
-		"setenv mmcroot \"/dev/mmcblk0p1 rootwait rw\"; " \
+		"mmc dev 1; " \
+		"setenv mmcdev 1; " \
+		"setenv mmcroot \"/dev/mmcblk1p1 rootwait rw\"; " \
 		"run loadimage; " \
 		"run mmcboot;" \
 
