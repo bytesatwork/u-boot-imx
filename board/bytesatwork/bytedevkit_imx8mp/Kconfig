@@ -1,0 +1,15 @@
+if TARGET_IMX8MP_BYTEDEVKIT
+
+config SYS_BOARD
+	default "bytedevkit_imx8mp"
+
+config SYS_VENDOR
+	default "bytesatwork"
+
+config SYS_CONFIG_NAME
+	default "imx8mp_bytedevkit"
+
+config IMX_CONFIG
+	default "board/bytesatwork/bytedevkit_imx8mp/imximage-8mp-lpddr4.cfg"
+
+endif

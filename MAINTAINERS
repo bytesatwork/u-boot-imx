@@ -252,6 +252,11 @@ M:	Stephan Dünner <stephan.duenner@bytesatwork.ch>
 S:	Maintained
 T:	git https://github.com/bytesatwork/u-boot-imx
 F:	.github/workflows/checkpatch.yml
+F:	arch/arm/dts/imx8mp-bytedevkit-u-boot.dtsi
+F:	arch/arm/dts/imx8mp-bytedevkit.dts
+F:	board/bytesatwork/bytedevkit_imx8mp/
+F:	configs/imx8mp_bytedevkit_defconfig
+F:	include/configs/imx8mp_bytedevkit.h
 
 ARM CORTINA ACCESS CAxxxx
 M:	Alex Nemirovsky <alex.nemirovsky@cortina-access.com>
