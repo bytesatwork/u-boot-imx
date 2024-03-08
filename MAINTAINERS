@@ -205,6 +205,16 @@ F:	doc/README.bcm7xxx
 F:	drivers/mmc/bcmstb_sdhci.c
 F:	drivers/spi/bcmstb_spi.c
 
+ARM BYTESATWORK BYTEDEVKIT IMX8MP
+M:	Stephan Dünner <stephan.duenner@bytesatwork.ch>
+S:	Maintained
+T:	git https://github.com/bytesatwork/u-boot-imx
+F:	arch/arm/dts/imx8mp-bytedevkit-u-boot.dtsi
+F:	arch/arm/dts/imx8mp-bytedevkit.dts
+F:	board/bytesatwork/bytedevkit_imx8mp/
+F:	configs/imx8mp_bytedevkit_defconfig
+F:	include/configs/imx8mp_bytedevkit.h
+
 ARM CORTINA ACCESS CAxxxx
 M:	Alex Nemirovsky <alex.nemirovsky@cortina-access.com>
 S:	Supported
