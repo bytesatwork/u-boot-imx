@@ -261,10 +261,15 @@ S:	Maintained
 W:	https://www.bytesatwork.io/
 T:	git https://github.com/bytesatwork/u-boot-imx
 F:	.github/workflows/checkpatch.yml
+F:	arch/arm/dts/imx8mp-bytedevkit-u-boot.dtsi
+F:	arch/arm/dts/imx8mp-bytedevkit.dts
 F:	arch/arm/dts/imx93-bytedevkit.dts
+F:	board/bytesatwork/bytedevkit_imx8mp/
 F:	board/bytesatwork/bytedevkit_imx93/
 F:	cmd/cpuinfo.c
+F:	configs/imx8mp_bytedevkit_defconfig
 F:	configs/imx93_bytedevkit_defconfig
+F:	include/configs/imx8mp_bytedevkit.h
 F:	include/configs/imx93_bytedevkit.h
 
 ARM CORTINA ACCESS CAxxxx
