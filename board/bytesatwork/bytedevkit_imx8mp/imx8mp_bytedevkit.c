@@ -7,7 +7,6 @@
  *
  */
 
-#include <common.h>
 #include <efi_loader.h>
 #include <env.h>
 #include <errno.h>
@@ -27,7 +26,6 @@
 #include <spl.h>
 #include <asm/mach-imx/dma.h>
 #include <power/pmic.h>
-#include "../common/tcpc.h"
 #include <usb.h>
 #include <dwc3-uboot.h>
 #include <imx_sip.h>
@@ -494,11 +492,8 @@ int board_init(void)
 
 int board_late_init(void)
 {
-#ifdef CONFIG_ENV_IS_IN_MMC
-	board_late_mmc_env_init();
-#endif
 #ifdef CONFIG_ENV_VARS_UBOOT_RUNTIME_CONFIG
-	env_set("board_name", "EVK");
+	env_set("board_name", "BYTEDEVKIT");
 	env_set("board_rev", "iMX8MP");
 #endif
 

@@ -118,7 +118,7 @@
 	"boot_fdt=try\0" \
 	"fdt_high=0xffffffffffffffff\0"		\
 	"boot_fit=no\0" \
-	"fdtfile=/boot/imx8mp-evk.dtb\0" \
+	"fdtfile=/boot/imx8mp-bytedevkit.dtb\0" \
 	"bootm_size=0x10000000\0" \
 	"mmcdev=1\0" \
 	"mmcpart=1\0" \
@@ -186,11 +186,7 @@
 #define PHYS_SDRAM			0x40000000
 #define PHYS_SDRAM_SIZE			0xC0000000	/* 3 GB */
 #define PHYS_SDRAM_2			0x100000000
-#ifdef CONFIG_TARGET_IMX8MP_DDR4_EVK
 #define PHYS_SDRAM_2_SIZE		0x40000000	/* 1 GB */
-#else
-#define PHYS_SDRAM_2_SIZE		0x40000000	/* 1 GB */
-#endif
 
 #define CONFIG_MXC_UART_BASE		UART1_BASE_ADDR
 
@@ -203,11 +199,7 @@
 
 #define CONFIG_IMX_BOOTAUX
 
-#ifdef CONFIG_TARGET_IMX8MP_DDR4_EVK
-#define CONFIG_SYS_FSL_USDHC_NUM	1
-#else
 #define CONFIG_SYS_FSL_USDHC_NUM	2
-#endif
 #define CONFIG_SYS_FSL_ESDHC_ADDR	0
 
 #ifdef CONFIG_NAND_MXS
@@ -226,9 +218,5 @@
 #define CONFIG_USB_MAX_CONTROLLER_COUNT         2
 #define CONFIG_USBD_HS
 #define CONFIG_USB_GADGET_VBUS_DRAW 2
-
-#ifdef CONFIG_ANDROID_SUPPORT
-#include "imx8mp_evk_android.h"
-#endif
 
 #endif
