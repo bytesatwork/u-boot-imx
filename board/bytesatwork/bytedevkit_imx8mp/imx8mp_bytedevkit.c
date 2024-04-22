@@ -541,3 +541,27 @@ int is_recovery_key_pressing(void)
 }
 #endif /* CONFIG_ANDROID_RECOVERY */
 #endif /* CONFIG_FSL_FASTBOOT */
+
+#include <asm/armv8/mmu.h>
+extern struct mm_region *mem_map;
+
+int board_phys_sdram_size(phys_size_t *size)
+{
+	/* NOTE: value passed from SPL (same address as set in SPL) */
+	phys_size_t *ram_size = (phys_size_t *)BAW_CONFIG_RAM_SIZE_PTR_ADDR;
+
+	if (!size)
+		return -EINVAL;
+
+	switch (*ram_size) {
+	case SZ_4G:
+		mem_map[6].size = SZ_2G + SZ_1G;
+		mem_map[7].size = SZ_1G;
+		*size = *ram_size;
+		break;
+	default:
+		return -EINVAL;
+	}
+
+	return 0;
+}
