@@ -29,6 +29,7 @@
 #include <fsl_esdhc_imx.h>
 #include <mmc.h>
 #include <asm/arch/ddr.h>
+#include "../baw_config/baw_config_eeprom.h"
 
 DECLARE_GLOBAL_DATA_PTR;
 
@@ -60,6 +61,10 @@ int spl_board_boot_device(enum boot_device boot_dev_spl)
 
 void spl_dram_init(void)
 {
+	if (IS_ENABLED(CONFIG_BAW_CONFIG_EEPROM))
+		if (baw_config_eeprom_init())
+			printf("EEPROM init failed!\n");
+
 	ddr_init(&dram_timing);
 }
 

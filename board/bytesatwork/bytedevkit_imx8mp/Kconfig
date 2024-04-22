@@ -12,4 +12,6 @@ config SYS_CONFIG_NAME
 config IMX_CONFIG
 	default "board/bytesatwork/bytedevkit_imx8mp/imximage-8mp-lpddr4.cfg"
 
+source "board/bytesatwork/baw_config/Kconfig"
+
 endif

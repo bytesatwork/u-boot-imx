@@ -15,6 +15,10 @@
 #include <asm/arch/imx-regs.h>
 #include "imx_env.h"
 
+#define BAW_CONFIG_BUILTIN_PCB		M7_PCB_REV_1_0
+#define BAW_CONFIG_BUILTIN_RAM		M7_RAM_MT53E1G32D2FW_046
+#define BAW_CONFIG_BUILTIN_FLASH	EMMC_16GB
+
 #define CONFIG_SYS_BOOTM_LEN		(32 * SZ_1M)
 
 #define CONFIG_SPL_MAX_SIZE		(176 * 1024)
