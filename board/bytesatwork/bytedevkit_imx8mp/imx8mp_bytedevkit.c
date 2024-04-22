@@ -32,11 +32,13 @@
 #include <imx_sip.h>
 #include <linux/arm-smccc.h>
 #include <mmc.h>
+#include "../baw_config/baw_config_eeprom.h"
 
 DECLARE_GLOBAL_DATA_PTR;
 
 #define UART_PAD_CTRL	(PAD_CTL_DSE6 | PAD_CTL_FSEL1)
 #define WDOG_PAD_CTRL	(PAD_CTL_DSE6 | PAD_CTL_ODE | PAD_CTL_PUE | PAD_CTL_PE)
+#define I2C_PAD_CTRL	(PAD_CTL_DSE6 | PAD_CTL_HYS | PAD_CTL_PUE | PAD_CTL_PE)
 
 static const iomux_v3_cfg_t uart_pads[] = {
 	MX8MP_PAD_UART1_RXD__UART1_DCE_RX | MUX_PAD_CTRL(UART_PAD_CTRL),
@@ -45,6 +47,11 @@ static const iomux_v3_cfg_t uart_pads[] = {
 
 static const iomux_v3_cfg_t wdog_pads[] = {
 	MX8MP_PAD_GPIO1_IO02__WDOG1_WDOG_B  | MUX_PAD_CTRL(WDOG_PAD_CTRL),
+};
+
+static const iomux_v3_cfg_t i2c1_pads[] = {
+	MX8MP_PAD_I2C1_SCL__I2C1_SCL | MUX_PAD_CTRL(I2C_PAD_CTRL),
+	MX8MP_PAD_I2C1_SDA__I2C1_SDA | MUX_PAD_CTRL(I2C_PAD_CTRL),
 };
 
 #ifdef CONFIG_NAND_MXS
@@ -83,6 +90,8 @@ int board_early_init_f(void)
 	imx_iomux_v3_setup_multiple_pads(uart_pads, ARRAY_SIZE(uart_pads));
 
 	init_uart_clk(0);
+
+	imx_iomux_v3_setup_multiple_pads(i2c1_pads, ARRAY_SIZE(i2c1_pads));
 
 	return 0;
 }
@@ -493,6 +502,10 @@ int board_late_init(void)
 	env_set("board_rev", "iMX8MP");
 #endif
 
+	if (IS_ENABLED(CONFIG_BAW_CONFIG_EEPROM))
+		if (baw_config_eeprom_init())
+			printf("EEPROM init failed!\n");
+
 	return 0;
 }
 
@@ -535,3 +548,27 @@ int is_recovery_key_pressing(void)
 }
 #endif /* CONFIG_ANDROID_RECOVERY */
 #endif /* CONFIG_FSL_FASTBOOT */
+
+#include <asm/armv8/mmu.h>
+extern struct mm_region *mem_map;
+
+int board_phys_sdram_size(phys_size_t *size)
+{
+	/* NOTE: value passed from SPL (same address as set in SPL) */
+	phys_size_t *ram_size = (phys_size_t *)BAW_CONFIG_RAM_SIZE_PTR_ADDR;
+
+	if (!size)
+		return -EINVAL;
+
+	switch (*ram_size) {
+	case SZ_4G:
+		mem_map[6].size = SZ_2G + SZ_1G;
+		mem_map[7].size = SZ_1G;
+		*size = *ram_size;
+		break;
+	default:
+		return -EINVAL;
+	}
+
+	return 0;
+}

@@ -9,6 +9,7 @@
 
 #include <linux/kernel.h>
 #include <asm/arch/ddr.h>
+#include "lpddr4_timings.h"
 
 struct dram_cfg_param ddr_ddrc_cfg[] = {
 	/** Initialize DDRC registers **/
@@ -1832,7 +1833,7 @@ struct dram_fsp_msg ddr_dram_fsp_msg[] = {
 };
 
 /* ddr timing config params */
-struct dram_timing_info dram_timing = {
+struct dram_timing_info dram_timing_4gb = {
 	.ddrc_cfg = ddr_ddrc_cfg,
 	.ddrc_cfg_num = ARRAY_SIZE(ddr_ddrc_cfg),
 	.ddrphy_cfg = ddr_ddrphy_cfg,
