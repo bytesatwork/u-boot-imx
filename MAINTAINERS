@@ -252,6 +252,10 @@ M:	Rico Ganahl <rico.ganahl@bytesatwork.ch>
 S:	Maintained
 W:	https://www.bytesatwork.io/
 F:	.github/workflows/checkpatch.yaml
+F:	arch/arm/dts/imx93-bytedevkit.dts
+F:	board/bytesatwork/bytedevkit_imx93/
+F:	configs/imx93_bytedevkit_defconfig
+F:	include/configs/imx93_bytedevkit.h
 
 ARM CORTINA ACCESS CAxxxx
 M:	Alex Nemirovsky <alex.nemirovsky@cortina-access.com>
