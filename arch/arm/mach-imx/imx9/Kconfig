@@ -43,6 +43,11 @@ config TARGET_IMX93_9X9_QSB
 	select IMX93
 	select IMX9_LPDDR4X
 
+config TARGET_IMX93_BYTEDEVKIT
+	bool "bytesatwork byteDEVKIT imx93 board"
+	select OF_BOARD_FIXUP
+	select IMX93
+
 config TARGET_IMX91P_11X11_EVK
 	bool "imx91p_11x11_evk"
 	select IMX93
@@ -62,6 +67,7 @@ config TARGET_TITAN_IMX95_19X19
 
 endchoice
 
+source "board/bytesatwork/bytedevkit_imx93/Kconfig"
 source "board/freescale/imx93_evk/Kconfig"
 source "board/freescale/imx93_qsb/Kconfig"
 source "board/freescale/imx95_evk/Kconfig"
