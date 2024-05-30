@@ -1,5 +1,8 @@
 // SPDX-License-Identifier: GPL-2.0+
 /*
+ * Copyright (C) 2024 bytesatwork AG - https://www.bytesatwork.io
+ *
+ * based on board/freescale/imx93_evk/spl.c
  * Copyright 2022 NXP
  */
 
@@ -31,7 +34,6 @@
 #include <asm/arch/ddr.h>
 #include <power/pmic.h>
 #include <power/pca9450.h>
-#include <power/pf0900.h>
 #include <asm/arch/trdc.h>
 
 DECLARE_GLOBAL_DATA_PTR;
@@ -69,84 +71,16 @@ extern struct dram_timing_info dram_timing_1866mts;
 void spl_dram_init(void)
 {
 	struct dram_timing_info *ptiming = &dram_timing;
-#if IS_ENABLED(CONFIG_IMX93_EVK_LPDDR4X)
-	if (is_voltage_mode(VOLT_LOW_DRIVE))
-		ptiming = &dram_timing_1866mts;
-#endif
+
+	if (IS_ENABLED(CONFIG_IMX93_BYTEDEVKIT_LPDDR4X)) {
+		if (is_voltage_mode(VOLT_LOW_DRIVE))
+			ptiming = &dram_timing_1866mts;
+	}
 
 	printf("DDR: %uMTS\n", ptiming->fsp_msg[0].drate);
 	ddr_init(ptiming);
 }
 
-#if CONFIG_IS_ENABLED(DM_PMIC_PF0900)
-int power_init_board(void)
-{
-	struct udevice *dev;
-	int ret;
-	unsigned int sw_val;
-
-	ret = pmic_get("pmic@8", &dev);
-	if (ret != 0) {
-		puts("ERROR: Get PMIC PF0900 failed!\n");
-		return ret;
-	}
-	puts("PMIC: PF0900\n");
-	if (is_voltage_mode(VOLT_LOW_DRIVE)) {
-		sw_val = 0x39; /* 0.8v for Low drive mode */
-		printf("PMIC: Low Drive Voltage Mode\n");
-	} else if (is_voltage_mode(VOLT_NOMINAL_DRIVE)) {
-		sw_val = 0x41; /* 0.85v for Nominal drive mode */
-		printf("PMIC: Nominal Voltage Mode\n");
-	} else {
-		sw_val = 0x49; /* 0.9v for Over drive mode */
-		printf("PMIC: Over Drive Voltage Mode\n");
-	}
-
-	ret = pmic_reg_read(dev, PF0900_REG_SW1_VRUN);
-	if (ret < 0)
-		return ret;
-
-	sw_val = (sw_val & SW_VRUN_MASK) | (ret & ~SW_VRUN_MASK);
-	ret = pmic_reg_write(dev, PF0900_REG_SW1_VRUN, sw_val);
-	if (ret != 0)
-		return ret;
-
-	ret = pmic_reg_read(dev, PF0900_REG_SW1_VSTBY);
-	if (ret < 0)
-		return ret;
-
-	/* set standby voltage to 0.65v */
-	sw_val = 0x21;
-	sw_val = (sw_val & SW_STBY_MASK) | (ret & ~SW_STBY_MASK);
-	ret = pmic_reg_write(dev, PF0900_REG_SW1_VSTBY, sw_val);
-	if (ret != 0)
-		return ret;
-
-	ret = pmic_reg_read(dev, PF0900_REG_GPO_CTRL);
-	if (ret < 0)
-		return ret;
-
-	/* I2C_LT_EN*/
-	sw_val = 0x40;
-	sw_val = (sw_val & GPO3_RUN_MASK) | (ret & ~GPO3_RUN_MASK);
-	ret = pmic_reg_write(dev, PF0900_REG_GPO_CTRL, sw_val);
-	if (ret != 0)
-		return ret;
-
-	ret = pmic_reg_read(dev, PF0900_REG_SYS_CFG1);
-	if (ret < 0)
-		return ret;
-	/*disable stby xrst*/
-	sw_val = 0x0;
-	sw_val = (sw_val & XRST_STBY_EN_MASK) | (ret & ~XRST_STBY_EN_MASK);
-	ret = pmic_reg_write(dev, PF0900_REG_SYS_CFG1, sw_val);
-	if (ret != 0)
-		return ret;
-	return 0;
-}
-#endif
-
-#if CONFIG_IS_ENABLED(DM_PMIC_PCA9450)
 int power_init_board(void)
 {
 	struct udevice *dev;
@@ -190,7 +124,7 @@ int power_init_board(void)
 		pmic_reg_write(dev, PCA9450_BUCK3OUT_DVS0, buck_val + 0x4);
 	}
 
-	if (IS_ENABLED(CONFIG_IMX93_EVK_LPDDR4)) {
+	if (IS_ENABLED(CONFIG_IMX93_BYTEDEVKIT_LPDDR4)) {
 		/* Set VDDQ to 1.1V from buck2 */
 		pmic_reg_write(dev, PCA9450_BUCK2OUT_DVS0, 0x28);
 	}
@@ -205,7 +139,6 @@ int power_init_board(void)
 	pmic_reg_write(dev, 0xa, 0x3);
 	return 0;
 }
-#endif
 
 extern int imx9_probe_mu(void *ctx, struct event *event);
 void board_init_f(ulong dummy)
