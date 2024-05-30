@@ -1,10 +1,13 @@
 /* SPDX-License-Identifier: GPL-2.0+ */
 /*
+ * Copyright (C) 2024 bytesatwork AG - https://www.bytesatwork.io
+ *
+ * based on imx93_evk.h
  * Copyright 2022 NXP
  */
 
-#ifndef __IMX93_EVK_H
-#define __IMX93_EVK_H
+#ifndef __IMX93_BYTEDEVKIT_H
+#define __IMX93_BYTEDEVKIT_H
 
 #include <linux/sizes.h>
 #include <linux/stringify.h>
@@ -31,38 +34,6 @@
 #define BOOTENV
 #endif
 
-#define JH_ROOT_DTB    "imx93-11x11-evk-root.dtb"
-
-#define JAILHOUSE_ENV \
-	"jh_root_dtb=" JH_ROOT_DTB "\0" \
-	"jh_mmcboot=setenv fdtfile ${jh_root_dtb}; " \
-		    "setenv jh_clk clk_ignore_unused mem=1248MB kvm-arm.mode=nvhe; " \
-		    "if run loadimage; then run mmcboot;" \
-		    "else run jh_netboot; fi; \0" \
-	"jh_netboot=setenv fdtfile ${jh_root_dtb}; " \
-		    "setenv jh_clk clk_ignore_unused mem=1248MB kvm-arm.mode=nvhe; run netboot; \0 "
-
-#define SR_IR_V2_COMMAND \
-	"nodes=/usbg1 /usbg2 /wdt-reboot /rm67199_panel /dsi-host /display-subsystem " \
-	       "/soc@0/bus@44000000/dma-controller@44000000 /soc@0/bus@44000000/sai@443b0000 " \
-	       "/soc@0/bus@44000000/mqs1 /soc@0/bus@44000000/bbnsm@44440000 " \
-	       "/soc@0/bus@44000000/system-controller@44460000 /soc@0/bus@44000000/tmu@44482000 " \
-	       "/soc@0/bus@44000000/micfil@44520000 /soc@0/bus@42000000/dma-controller@42000000 " \
-	       "/soc@0/bus@44000000/i3c-master@44330000 /soc@0/bus@42000000/i3c-master@42520000 " \
-	       "/soc@0/bus@42000000/sai@42650000 /soc@0/bus@42000000/sai@42660000 " \
-	       "/soc@0/bus@42000000/mqs2 /soc@0/bus@42000000/xcvr@42680000 " \
-	       "/soc@0/bus@42000000/flexio@425c0000 /soc@0/bus@42800000/epxp@4ae20000 " \
-	       "/soc@0/bus@42800000/camera /soc@0/efuse@47510000 " \
-	       "/soc@0/system-controller@4ac10000 /soc@0/ldb@4ac10020 /soc@0/phy@4ac10024 "\
-	       "/soc@0/ele-mu /soc@0/dsi@4ae10000 /soc@0/lcd-controller@4ae30000 " \
-	       "/soc@0/blk-ctrl@4e010000 /soc@0/memory-controller@4e300000 " \
-	       "/soc@0/bus@44000000/i2c@44350000/pmic@25 /imx93-lpm  \0" \
-	"sr_ir_v2_cmd=cp.b ${fdtcontroladdr} ${fdt_addr_r} 0x10000;"\
-	"fdt addr ${fdt_addr_r};"\
-	"fdt resize 0x400;"\
-	"fdt set /soc@0/bus@44000000/i2c@44350000/gpio@34 compatible adi,adp5585;" \
-	"for i in ${nodes}; do fdt rm ${i}; done \0"
-
 #define CFG_MFG_ENV_SETTINGS \
 	CFG_MFG_ENV_SETTINGS_DEFAULT \
 	"initrd_addr=0x83800000\0" \
@@ -72,15 +43,13 @@
 
 /* Initial environment variables */
 #define CFG_EXTRA_ENV_SETTINGS		\
-	JAILHOUSE_ENV \
 	CFG_MFG_ENV_SETTINGS \
 	BOOTENV \
 	AHAB_ENV \
-	SR_IR_V2_COMMAND \
 	"prepare_mcore=setenv mcore_clk clk-imx93.mcore_booted;\0" \
 	"scriptaddr=0x83500000\0" \
 	"kernel_addr_r=" __stringify(CONFIG_SYS_LOAD_ADDR) "\0" \
-	"image=Image\0" \
+	"image=/boot/Image\0" \
 	"splashimage=0x90000000\0" \
 	"console=ttyLP0,115200 earlycon\0" \
 	"fdt_addr_r=0x83000000\0"			\
@@ -89,19 +58,19 @@
 	"cntr_addr=0x98000000\0"			\
 	"cntr_file=os_cntr_signed.bin\0" \
 	"boot_fit=no\0" \
-	"fdtfile=" CONFIG_DEFAULT_FDT_FILE "\0" \
+	"fdtfile=/boot/" CONFIG_DEFAULT_FDT_FILE "\0" \
 	"bootm_size=0x10000000\0" \
 	"mmcdev=" __stringify(CONFIG_SYS_MMC_ENV_DEV)"\0" \
 	"mmcpart=1\0" \
-	"mmcroot=/dev/mmcblk1p2 rootwait rw\0" \
+	"mmcroot=/dev/mmcblk1p1 rootwait rw\0" \
 	"mmcautodetect=yes\0" \
 	"mmcargs=setenv bootargs ${jh_clk} ${mcore_clk} console=${console} root=${mmcroot}\0 " \
 	"loadbootscript=fatload mmc ${mmcdev}:${mmcpart} ${loadaddr} ${script};\0" \
 	"bootscript=echo Running bootscript from mmc ...; " \
 		"source\0" \
-	"loadimage=fatload mmc ${mmcdev}:${mmcpart} ${loadaddr} ${image}\0" \
-	"loadfdt=fatload mmc ${mmcdev}:${mmcpart} ${fdt_addr_r} ${fdtfile}\0" \
-	"loadcntr=fatload mmc ${mmcdev}:${mmcpart} ${cntr_addr} ${cntr_file}\0" \
+	"loadimage=load mmc ${mmcdev}:${mmcpart} ${loadaddr} ${image}\0" \
+	"loadfdt=load mmc ${mmcdev}:${mmcpart} ${fdt_addr_r} ${fdtfile}\0" \
+	"loadcntr=load mmc ${mmcdev}:${mmcpart} ${cntr_addr} ${cntr_file}\0" \
 	"auth_os=auth_cntr ${cntr_addr}\0" \
 	"boot_os=booti ${loadaddr} - ${fdt_addr_r};\0" \
 	"mmcboot=echo Booting from mmc ...; " \
@@ -177,8 +146,8 @@
 #define CFG_SYS_INIT_RAM_SIZE        0x200000
 
 #define CFG_SYS_SDRAM_BASE           0x80000000
-#define PHYS_SDRAM                      0x80000000
-#define PHYS_SDRAM_SIZE			0x80000000 /* 2GB DDR */
+#define PHYS_SDRAM                   0x80000000
+#define PHYS_SDRAM_SIZE              0x40000000 /* 1GB DDR */
 
 #define CFG_SYS_FSL_USDHC_NUM	2
 
