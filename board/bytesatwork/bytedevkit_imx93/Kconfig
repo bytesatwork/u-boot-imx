@@ -31,4 +31,6 @@ config IMX93_BYTEDEVKIT_LPDDR4
 
 endchoice
 
+source "board/bytesatwork/baw_config/Kconfig"
+
 endif
