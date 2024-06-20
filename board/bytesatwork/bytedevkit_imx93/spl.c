@@ -36,6 +36,7 @@
 #include <power/pmic.h>
 #include <power/pca9450.h>
 #include <asm/arch/trdc.h>
+#include "../baw_config/baw_config_eeprom.h"
 
 DECLARE_GLOBAL_DATA_PTR;
 
@@ -72,6 +73,11 @@ extern struct dram_timing_info dram_timing_1866mts;
 void spl_dram_init(void)
 {
 	struct dram_timing_info *ptiming = &dram_timing;
+
+	if (IS_ENABLED(CONFIG_BAW_CONFIG_EEPROM)) {
+		if (baw_config_eeprom_init())
+			printf("EEPROM init failed!\n");
+	}
 
 #if IS_ENABLED(CONFIG_IMX93_BYTEDEVKIT_LPDDR4X)
 	if (is_voltage_mode(VOLT_LOW_DRIVE))

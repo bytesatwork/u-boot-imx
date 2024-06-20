@@ -22,6 +22,7 @@
 #include <usb.h>
 #include <dwc3-uboot.h>
 #include <asm/gpio.h>
+#include "../baw_config/baw_config_eeprom.h"
 
 DECLARE_GLOBAL_DATA_PTR;
 
@@ -108,6 +109,12 @@ int board_late_init(void)
 	env_set("board_name", "byteDEVKIT");
 	env_set("board_rev", "iMX93");
 #endif
+
+	if (IS_ENABLED(CONFIG_BAW_CONFIG_EEPROM)) {
+		if (baw_config_eeprom_init())
+			printf("EEPROM init failed!\n");
+	}
+
 	return 0;
 }
 
