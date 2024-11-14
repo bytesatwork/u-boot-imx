@@ -3,9 +3,9 @@
  * Copyright (C) 2015 bytesatwork AG - https://www.bytesatwork.io
  */
 
-#include <common.h>
 #include <command.h>
 #include <post.h>
+#include <vsprintf.h>
 #include "baw_config_builtin.h"
 #include "baw_config_eeprom.h"
 

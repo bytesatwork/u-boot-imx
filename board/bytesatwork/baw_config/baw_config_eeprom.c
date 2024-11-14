@@ -6,7 +6,6 @@
 #include "baw_config_eeprom.h"
 #include "baw_config.h"
 
-#include <common.h>
 #include <dm/uclass.h>
 #include <i2c.h>
 #include <hexdump.h>
