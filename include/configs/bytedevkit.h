@@ -27,17 +27,13 @@
 
 #endif
 
-#define CFG_MFG_ENV_SETTINGS \
-	CFG_MFG_ENV_SETTINGS_DEFAULT \
-	"initrd_addr=0x43800000\0"
-
 /* Initial environment variables */
 #define CFG_EXTRA_ENV_SETTINGS \
-	CFG_MFG_ENV_SETTINGS \
 	"image=boot/Image\0" \
 	"console=ttymxc0,115200 earlycon=ec_imx6q,0x30890000,115200\0" \
 	"fdt_addr=0x43000000\0" \
 	"fdt_file=boot/imx8mm-bytedevkit.dtb\0" \
+	"initrd_addr=0x43800000\0" \
 	"mmcroot=/dev/mmcblk1p1 rootwait rw\0" \
 	"emmcroot=/dev/mmcblk0p1 rootwait rw\0" \
 	"bootargs=setenv bootargs console=${console} root=${fsroot} " \
