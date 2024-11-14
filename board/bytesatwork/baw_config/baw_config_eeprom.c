@@ -77,6 +77,7 @@ struct eeprom_read_frame {
 
 int baw_config_eeprom_init(void)
 {
+#if (!IS_ENABLED(CONFIG_SPL_BUILD) || IS_ENABLED(CONFIG_SPL_DM_I2C))
 	int ret;
 
 	ret = uclass_get_device_by_name(UCLASS_I2C, CONFIG_BAW_CONFIG_EEPROM_BUS_NAME, &busp);
@@ -99,7 +100,7 @@ int baw_config_eeprom_init(void)
 		printf("%s(): i2c_set_chip_offset_len(): %d\n", __func__, ret);
 		return ret;
 	}
-
+#endif
 	return 0;
 }
 
@@ -113,7 +114,13 @@ static int i2c_write_rdy(void)
 	u8 dummy = 0xff; /* i2c_write doesn't like to write NULL pointers */
 
 	for (i = 0; ret < 0 && i < 10; ++i) {
+#if (IS_ENABLED(CONFIG_SPL_BUILD) && IS_ENABLED(CONFIG_SPL_SYS_I2C_LEGACY))
+		i2c_set_bus_num(CONFIG_BAW_CONFIG_EEPROM_BUS);
+		ret = i2c_write(CONFIG_BAW_CONFIG_EEPROM_ADDRESS, 0,
+				CONFIG_BAW_CONFIG_EEPROM_ADDRESS_BYTES, &dummy, 0);
+#else
 		ret = dm_i2c_write(baw_config_dev, 0, &dummy, 0);
+#endif
 		if (ret != 0)
 			udelay(500);
 	}
@@ -140,8 +147,12 @@ int i2c_long_write(struct eeprom_write_frame frame, int len)
 				break;
 			}
 		}
-
+#if (IS_ENABLED(CONFIG_SPL_BUILD) && IS_ENABLED(CONFIG_SPL_SYS_I2C_LEGACY))
+		ret = i2c_write(CONFIG_BAW_CONFIG_EEPROM_ADDRESS, off,
+				CONFIG_BAW_CONFIG_EEPROM_ADDRESS_BYTES, (u8 *)(&frame) + off, wlen);
+#else
 		ret = dm_i2c_write(baw_config_dev, off, (u8 *)(&frame) + off, wlen);
+#endif
 		if (ret != 0) {
 			ret = -EIO;
 			break;
@@ -161,9 +172,15 @@ int baw_config_eeprom_read(struct baw_config *config)
 {
 	struct eeprom_read_frame frame;
 
+#if (IS_ENABLED(CONFIG_SPL_BUILD) && IS_ENABLED(CONFIG_SPL_SYS_I2C_LEGACY))
+	i2c_set_bus_num(CONFIG_BAW_CONFIG_EEPROM_BUS);
+	if (i2c_read(CONFIG_BAW_CONFIG_EEPROM_ADDRESS, 0, CONFIG_BAW_CONFIG_EEPROM_ADDRESS_BYTES,
+		     (u8 *)&frame, sizeof(frame)) != 0)
+		return -3;
+#else
 	if (dm_i2c_read(baw_config_dev, 0, (u8 *)&frame, sizeof(frame)))
 		return -12;
-
+#endif
 	if (frame.content.header.magic != MAGIC)
 		return -4;
 
