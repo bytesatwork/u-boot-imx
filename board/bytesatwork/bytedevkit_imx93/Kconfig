@@ -1,0 +1,34 @@
+# Copyright (C) 2025 bytesatwork AG - https://www.bytesatwork.io
+
+if TARGET_IMX93_BYTEDEVKIT
+
+config SYS_BOARD
+	default "bytedevkit_imx93"
+
+config SYS_VENDOR
+	default "bytesatwork"
+
+config SYS_CONFIG_NAME
+	default "imx93_bytedevkit"
+
+choice
+	prompt "Select DDR Type"
+	default IMX93_BYTEDEVKIT_LPDDR4X
+
+config IMX93_BYTEDEVKIT_LPDDR4X
+	bool "Using LPDDR4X Timing and PMIC voltage"
+	select IMX9_LPDDR4X
+	help
+	  Select the LPDDR4X timing
+	  and 0.6V VDDQ
+
+config IMX93_BYTEDEVKIT_LPDDR4
+	bool "Using LPDDR4 Timing and PMIC voltage"
+	select IMX9_LPDDR4X
+	help
+	  Select the LPDDR4 timing
+	  and 1.1V VDDQ
+
+endchoice
+
+endif
