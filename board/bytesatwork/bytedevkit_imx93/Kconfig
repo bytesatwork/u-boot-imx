@@ -22,6 +22,13 @@ config IMX93_BYTEDEVKIT_LPDDR4X
 	  Select the LPDDR4X timing
 	  and 0.6V VDDQ
 
+config IMX93_BYTEDEVKIT_LPDDR4X_2GB
+	bool "Using LPDDR4X 2GB Timing"
+	select IMX9_LPDDR4X
+	help
+	  Select the LPDDR4X timing
+	  for 2GB RAM
+
 config IMX93_BYTEDEVKIT_LPDDR4
 	bool "Using LPDDR4 Timing and PMIC voltage"
 	select IMX9_LPDDR4X
